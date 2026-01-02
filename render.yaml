@@ -1,0 +1,50 @@
+# render.yaml - Template for deploying Sen-Recrutement on Render
+# Adapt values (service name, region, env vars, DB) before use.
+
+services:
+  - type: web
+    name: Sen-Recrutement
+    env: static
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: "composer install --no-interaction --prefer-dist && npm ci && npm run build || true"
+    startCommand: "php artisan serve --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: 'false'
+      - key: APP_URL
+        value: https://your-app.onrender.com
+      - key: APP_KEY
+        value: '' # generate and paste value or set via Render dashboard
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: <DB_HOST>
+      - key: DB_PORT
+        value: '3306'
+      - key: DB_DATABASE
+        value: <DB_NAME>
+      - key: DB_USERNAME
+        value: <DB_USER>
+      - key: DB_PASSWORD
+        value: <DB_PASS>
+      - key: MAIL_MAILER
+        value: smtp
+      - key: MAIL_HOST
+        value: <MAIL_HOST>
+      - key: MAIL_PORT
+        value: '587'
+      - key: MAIL_USERNAME
+        value: <MAIL_USER>
+      - key: MAIL_PASSWORD
+        value: <MAIL_PASS>
+      - key: MAIL_FROM_ADDRESS
+        value: noreply@example.com
+
+# Notes:
+# - Replace placeholders like <DB_HOST>, <DB_NAME>, etc. with real values or
+#   set environment variables in the Render dashboard instead of embedding secrets.
+# - For production, consider using Docker or a managed service and not php artisan serve.

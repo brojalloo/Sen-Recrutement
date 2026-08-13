@@ -59,11 +59,19 @@ services:
       - db_data:/var/lib/mysql
     # depends_on seul ne fait qu'attendre le démarrage du conteneur, pas que
     # MySQL accepte les connexions : sans ce contrôle, migrate part trop tôt.
+    #
+    # --protocol=TCP est indispensable. Pendant son initialisation, l'entrypoint
+    # MySQL lance un serveur temporaire accessible par socket seulement, sans
+    # écouter sur 3306. Un ping via le socket réussit alors contre ce serveur
+    # temporaire et déclare le service sain trop tôt : l'application démarre et
+    # se prend un « Connection refused ». Interroger le port teste le seul
+    # serveur qui nous intéresse.
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ularavel", "-psecret"]
+      test: ["CMD", "mysqladmin", "ping", "--protocol=TCP", "-h", "127.0.0.1", "-P", "3306", "-ularavel", "-psecret"]
       interval: 5s
       timeout: 5s
-      retries: 20
+      retries: 30
+      start_period: 20s
 
 volumes:
   db_data:

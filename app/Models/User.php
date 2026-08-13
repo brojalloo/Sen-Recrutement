@@ -3,13 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     public $timestamps = false;
@@ -71,9 +72,10 @@ class User extends Authenticatable
     // Accessor for full name
     public function getFullNameAttribute(): string
     {
-        if (!empty($this->first_name) || !empty($this->last_name)) {
-            return trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
+        if (! empty($this->first_name) || ! empty($this->last_name)) {
+            return trim(($this->first_name ?? '').' '.($this->last_name ?? ''));
         }
+
         return $this->name ?? '';
     }
 

@@ -11,6 +11,7 @@ class LogController extends Controller
     public function index()
     {
         $logs = AdminLog::query()->orderBy('id', 'desc')->paginate(50);
+
         return view('admin.logs', compact('logs'));
     }
 
@@ -33,6 +34,7 @@ class LogController extends Controller
         });
         $response->headers->set('Content-Type', 'text/csv');
         $response->headers->set('Content-Disposition', 'attachment; filename="admin_logs.csv"');
+
         return $response;
     }
 }

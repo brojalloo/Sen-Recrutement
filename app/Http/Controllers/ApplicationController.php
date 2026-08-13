@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Application;
 use App\Models\Job;
 use App\Models\User;
 use App\Notifications\NewApplicationReceived;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
 {
     public function applyForm($id)
     {
         $job = Job::findOrFail($id);
+
         return view('candidate.apply', compact('job'));
     }
 
@@ -24,9 +24,9 @@ class ApplicationController extends Controller
         $userId = Auth::id();
 
         $data = $request->validate([
-            'message' => ['nullable','string','max:5000'],
-            'cover_letter' => ['nullable','string','max:10000'],
-            'cv' => ['nullable','file','mimes:pdf,doc,docx','max:5120'],
+            'message' => ['nullable', 'string', 'max:5000'],
+            'cover_letter' => ['nullable', 'string', 'max:10000'],
+            'cv' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
         ]);
 
         $cvPath = null;

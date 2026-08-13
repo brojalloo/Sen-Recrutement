@@ -2,17 +2,17 @@
 
 namespace App\Notifications;
 
+use App\Models\Application;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Models\Application;
 
 class ApplicationStatusChanged extends Notification
 {
     use Queueable;
 
     protected $application;
+
     protected $status;
 
     public function __construct(Application $application, string $status)
@@ -30,7 +30,7 @@ class ApplicationStatusChanged extends Notification
     {
         $job = $this->application->job;
         $company = $job->company ?? 'l\'entreprise';
-        
+
         if ($this->status === 'accepted') {
             return (new MailMessage)
                 ->subject('🎉 Votre candidature a été acceptée !')

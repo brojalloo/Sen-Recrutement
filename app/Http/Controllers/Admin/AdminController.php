@@ -48,7 +48,7 @@ class AdminController extends Controller
         $job->update(['approval_status' => 'approved']);
 
         AdminLog::create([
-            'admin_id' => auth()->id(),
+            'user_id' => auth()->id(),
             'action' => 'approve_job',
             'description' => "Offre approuvée : {$job->title}",
             'ip_address' => request()->ip(),
@@ -63,7 +63,7 @@ class AdminController extends Controller
         $job->update(['approval_status' => 'rejected']);
 
         AdminLog::create([
-            'admin_id' => auth()->id(),
+            'user_id' => auth()->id(),
             'action' => 'reject_job',
             'description' => "Offre rejetée : {$job->title}",
             'ip_address' => request()->ip(),
@@ -79,7 +79,7 @@ class AdminController extends Controller
         $user->update(['status' => $newStatus]);
 
         AdminLog::create([
-            'admin_id' => auth()->id(),
+            'user_id' => auth()->id(),
             'action' => 'toggle_user_status',
             'description' => "Statut utilisateur modifié : {$user->email} -> {$newStatus}",
             'ip_address' => request()->ip(),

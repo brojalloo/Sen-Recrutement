@@ -24,7 +24,7 @@ class LogController extends Controller
                 foreach ($chunk as $log) {
                     fputcsv($handle, [
                         $log->id,
-                        $log->admin_id ?? '',
+                        $log->user_id ?? '',
                         $log->action ?? '',
                         $log->created_at ?? '',
                     ]);

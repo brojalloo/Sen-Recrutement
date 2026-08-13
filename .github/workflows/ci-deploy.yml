@@ -3,8 +3,10 @@ name: CI & Deploy
 on:
   push:
     branches: [ main ]
+  # Toutes les PR, pas seulement celles qui visent `main` : une PR empilée sur
+  # une autre branche n'était jamais vérifiée, et arrivait donc sur `main`
+  # sans avoir jamais vu la CI.
   pull_request:
-    branches: [ main ]
 
 jobs:
   build:

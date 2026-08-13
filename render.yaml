@@ -1,15 +1,21 @@
-# render.yaml - Template for deploying Sen-Recrutement on Render
-# Adapt values (service name, region, env vars, DB) before use.
+# render.yaml - Modèle de déploiement de Sen-Recrutement sur Render.
+# Adapter les valeurs (nom du service, région, base de données) avant usage.
+#
+# Les secrets (APP_KEY, mots de passe DB et SMTP) sont déclarés avec
+# sync: false : Render les demande à la création du service et ne les stocke
+# jamais dans ce fichier versionné.
 
 services:
   - type: web
-    name: Sen-Recrutement
-    env: static
+    name: sen-recrutement
+    # L'application est un service PHP, pas un site statique.
+    # Le Dockerfile du dépôt construit les assets et l'image applicative.
+    env: docker
+    dockerfilePath: ./Dockerfile
     region: oregon
     plan: free
     branch: main
-    buildCommand: "composer install --no-interaction --prefer-dist && npm ci && npm run build || true"
-    startCommand: "php artisan serve --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /up
     envVars:
       - key: APP_ENV
         value: production
@@ -17,34 +23,45 @@ services:
         value: 'false'
       - key: APP_URL
         value: https://your-app.onrender.com
+      # Générer avec `php artisan key:generate --show` et saisir dans le
+      # tableau de bord Render. Ne jamais la régénérer : cela invaliderait
+      # toutes les sessions et rendrait illisible toute donnée chiffrée.
       - key: APP_KEY
-        value: '' # generate and paste value or set via Render dashboard
+        sync: false
+
+      # Sécurité des sessions : obligatoire derrière HTTPS.
+      - key: SESSION_SECURE_COOKIE
+        value: 'true'
+      - key: SESSION_SAME_SITE
+        value: strict
+
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        value: <DB_HOST>
+        sync: false
       - key: DB_PORT
         value: '3306'
       - key: DB_DATABASE
-        value: <DB_NAME>
+        sync: false
       - key: DB_USERNAME
-        value: <DB_USER>
+        sync: false
       - key: DB_PASSWORD
-        value: <DB_PASS>
+        sync: false
+
       - key: MAIL_MAILER
         value: smtp
       - key: MAIL_HOST
-        value: <MAIL_HOST>
+        sync: false
       - key: MAIL_PORT
         value: '587'
       - key: MAIL_USERNAME
-        value: <MAIL_USER>
+        sync: false
       - key: MAIL_PASSWORD
-        value: <MAIL_PASS>
+        sync: false
       - key: MAIL_FROM_ADDRESS
         value: noreply@example.com
 
-# Notes:
-# - Replace placeholders like <DB_HOST>, <DB_NAME>, etc. with real values or
-#   set environment variables in the Render dashboard instead of embedding secrets.
-# - For production, consider using Docker or a managed service and not php artisan serve.
+# Après le premier déploiement, créer le compte administrateur :
+#   php artisan admin:create admin@votre-domaine.sn
+# C'est le seul chemin de création d'un admin : le formulaire d'inscription
+# public n'accepte que les rôles candidate et recruiter.

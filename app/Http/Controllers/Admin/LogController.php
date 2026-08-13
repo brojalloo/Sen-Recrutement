@@ -11,6 +11,7 @@ class LogController extends Controller
     public function index()
     {
         $logs = AdminLog::query()->orderBy('id', 'desc')->paginate(50);
+
         return view('admin.logs', compact('logs'));
     }
 
@@ -23,7 +24,7 @@ class LogController extends Controller
                 foreach ($chunk as $log) {
                     fputcsv($handle, [
                         $log->id,
-                        $log->admin_id ?? '',
+                        $log->user_id ?? '',
                         $log->action ?? '',
                         $log->created_at ?? '',
                     ]);
@@ -33,6 +34,7 @@ class LogController extends Controller
         });
         $response->headers->set('Content-Type', 'text/csv');
         $response->headers->set('Content-Disposition', 'attachment; filename="admin_logs.csv"');
+
         return $response;
     }
 }

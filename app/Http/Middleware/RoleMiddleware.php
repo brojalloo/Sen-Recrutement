@@ -11,9 +11,10 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, string $role)
     {
         $user = Auth::user();
-        if (!$user || ($user->role ?? null) !== $role) {
+        if (! $user || ($user->role ?? null) !== $role) {
             abort(403);
         }
+
         return $next($request);
     }
 }

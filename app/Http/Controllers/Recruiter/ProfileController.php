@@ -26,13 +26,14 @@ class ProfileController extends Controller
             'password' => 'nullable|min:8|confirmed',
         ]);
 
-        if (!empty($data['password'])) {
+        if (! empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);
         }
 
         $user->update($data);
+
         return back()->with('status', 'Profil mis à jour avec succès.');
     }
 }

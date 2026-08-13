@@ -34,9 +34,11 @@ class SendTestEmail extends Command
             });
 
             $this->info("Test email sent to {$email}");
+
             return 0;
         } catch (\Throwable $e) {
-            $this->error('Failed to send test email: ' . $e->getMessage());
+            $this->error('Failed to send test email: '.$e->getMessage());
+
             return 1;
         }
     }

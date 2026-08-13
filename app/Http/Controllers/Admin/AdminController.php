@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Job;
-use App\Models\Application;
 use App\Models\AdminLog;
+use App\Models\Application;
+use App\Models\Job;
+use App\Models\User;
 
 class AdminController extends Controller
 {
@@ -40,21 +39,21 @@ class AdminController extends Controller
         $pendingJobs = Job::query()->where('approval_status', 'pending')->orderByDesc('created_at')->limit(10)->get();
         $recentLogs = AdminLog::query()->orderByDesc('created_at')->limit(10)->get();
 
-        return view('admin.dashboard', compact('stats','recentUsers','pendingJobs','recentLogs'));
+        return view('admin.dashboard', compact('stats', 'recentUsers', 'pendingJobs', 'recentLogs'));
     }
 
     public function approveJob($id)
     {
         $job = Job::findOrFail($id);
         $job->update(['approval_status' => 'approved']);
-        
+
         AdminLog::create([
-            'admin_id' => auth()->id(),
+            'user_id' => auth()->id(),
             'action' => 'approve_job',
             'description' => "Offre approuvée : {$job->title}",
             'ip_address' => request()->ip(),
         ]);
-        
+
         return back()->with('status', 'Offre approuvée avec succès !');
     }
 
@@ -62,14 +61,14 @@ class AdminController extends Controller
     {
         $job = Job::findOrFail($id);
         $job->update(['approval_status' => 'rejected']);
-        
+
         AdminLog::create([
-            'admin_id' => auth()->id(),
+            'user_id' => auth()->id(),
             'action' => 'reject_job',
             'description' => "Offre rejetée : {$job->title}",
             'ip_address' => request()->ip(),
         ]);
-        
+
         return back()->with('status', 'Offre rejetée.');
     }
 
@@ -78,15 +77,16 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
         $newStatus = $user->status === 'active' ? 'inactive' : 'active';
         $user->update(['status' => $newStatus]);
-        
+
         AdminLog::create([
-            'admin_id' => auth()->id(),
+            'user_id' => auth()->id(),
             'action' => 'toggle_user_status',
             'description' => "Statut utilisateur modifié : {$user->email} -> {$newStatus}",
             'ip_address' => request()->ip(),
         ]);
-        
+
         $message = $newStatus === 'active' ? 'activé' : 'désactivé';
+
         return back()->with('status', "Utilisateur {$message} avec succès !");
     }
 }

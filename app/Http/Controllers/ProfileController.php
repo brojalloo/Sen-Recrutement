@@ -11,12 +11,13 @@ class ProfileController extends Controller
     public function uploadAvatar(Request $request)
     {
         $data = $request->validate([
-            'avatar' => ['required','file','mimes:png,jpg,jpeg','max:2048'],
+            'avatar' => ['required', 'file', 'mimes:png,jpg,jpeg', 'max:2048'],
         ]);
         $path = $request->file('avatar')->store('avatars', 'public');
         $user = Auth::user();
         $user->avatar = Storage::disk('public')->url($path);
         $user->save();
-        return back()->with('status','Avatar mis à jour');
+
+        return back()->with('status', 'Avatar mis à jour');
     }
 }

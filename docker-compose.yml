@@ -1,23 +1,50 @@
-version: '3.8'
+# Environnement de développement local uniquement.
+#
+# Lancer avec : docker compose up
+# Puis créer un administrateur : docker compose exec app php artisan admin:create admin@local.test
+#
+# Ne sert jamais en production : le déploiement utilise le Dockerfile seul,
+# avec APP_KEY et identifiants de base injectés par la plateforme.
+
 services:
   app:
     build: .
     ports:
       - "8000:8000"
+    # Le code est monté pour l'édition à chaud, mais vendor et public/build
+    # doivent rester ceux de l'image : le montage du dépôt les masquerait
+    # (ils sont dans .gitignore, donc absents côté hôte) et l'application
+    # démarrerait sans dépendances ni assets compilés.
+    volumes:
+      - ./:/var/www/html
+      - vendor:/var/www/html/vendor
+      - build:/var/www/html/public/build
+    # L'image tourne en www-data. En développement le code est monté depuis
+    # l'hôte avec ses propres droits, donc on repasse root pour que storage/
+    # et bootstrap/cache restent inscriptibles.
+    user: root
     environment:
       APP_ENV: local
       APP_DEBUG: 'true'
       APP_URL: http://localhost:8000
+      # Clé de développement, volontairement publique et sans valeur.
+      # Ne jamais la réutiliser ailleurs : en production APP_KEY vient de
+      # l'environnement et ne doit jamais être versionnée.
+      APP_KEY: base64:ZGV2ZWxvcHBlbWVudGxvY2FsdW5pcXVlbWVudDEyMzQ1Ng==
       DB_CONNECTION: mysql
       DB_HOST: db
       DB_PORT: 3306
       DB_DATABASE: laravel
       DB_USERNAME: laravel
       DB_PASSWORD: secret
-    volumes:
-      - ./:/var/www/html:cached
+    # Sans cette surcharge, la commande de l'image mettrait config et routes
+    # en cache, et les modifications locales ne seraient plus prises en compte.
+    command: >
+      sh -c "php artisan migrate --force
+      && php artisan serve --host=0.0.0.0 --port=8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: mysql:8.0
@@ -30,6 +57,23 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    # depends_on seul ne fait qu'attendre le démarrage du conteneur, pas que
+    # MySQL accepte les connexions : sans ce contrôle, migrate part trop tôt.
+    #
+    # --protocol=TCP est indispensable. Pendant son initialisation, l'entrypoint
+    # MySQL lance un serveur temporaire accessible par socket seulement, sans
+    # écouter sur 3306. Un ping via le socket réussit alors contre ce serveur
+    # temporaire et déclare le service sain trop tôt : l'application démarre et
+    # se prend un « Connection refused ». Interroger le port teste le seul
+    # serveur qui nous intéresse.
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--protocol=TCP", "-h", "127.0.0.1", "-P", "3306", "-ularavel", "-psecret"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
 
 volumes:
   db_data:
+  vendor:
+  build:

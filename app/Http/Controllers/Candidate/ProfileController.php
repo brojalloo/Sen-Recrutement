@@ -40,7 +40,7 @@ class ProfileController extends Controller
             $data['cv_path'] = $cvPath;
         }
 
-        if (!empty($data['password'])) {
+        if (! empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);
@@ -48,13 +48,14 @@ class ProfileController extends Controller
 
         unset($data['cv']); // Remove cv from data array
         $user->update($data);
+
         return back()->with('status', 'Profil mis à jour avec succès.');
     }
 
     public function deleteCV()
     {
         $user = Auth::user();
-        
+
         if ($user->cv_path && Storage::disk('public')->exists($user->cv_path)) {
             Storage::disk('public')->delete($user->cv_path);
             $user->update(['cv_path' => null]);

@@ -57,7 +57,7 @@
                         <i class="bi bi-person-gear"></i>
                       </div>
                       <div>
-                        <h6 class="mb-0 fw-semibold">Admin #{{ $log->admin_id }}</h6>
+                        <h6 class="mb-0 fw-semibold">Admin #{{ $log->user_id }}</h6>
                       </div>
                     </div>
                   </td>

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('recruitment_jobs', function (Blueprint $table) {
-            if (!Schema::hasColumn('recruitment_jobs', 'approval_status')) {
+            if (! Schema::hasColumn('recruitment_jobs', 'approval_status')) {
                 $table->string('approval_status')->default('pending')->after('status');
                 // pending, approved, rejected
             }

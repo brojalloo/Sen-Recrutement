@@ -1,33 +1,35 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\JobController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\AdminController as AdminDashboardController;
-use App\Http\Controllers\Candidate\CandidateController as CandidateDashboardController;
-use App\Http\Controllers\Recruiter\RecruiterController as RecruiterDashboardController;
-use App\Http\Controllers\ApplicationController;
-use App\Http\Controllers\MessagingController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\FileController;
-use App\Http\Controllers\Recruiter\JobController as RecruiterJobController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\JobAdminController;
 use App\Http\Controllers\Admin\LogController as AdminLogController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Candidate\CandidateController as CandidateDashboardController;
 use App\Http\Controllers\Candidate\ProfileController as CandidateProfileController;
-use App\Http\Controllers\Recruiter\ProfileController as RecruiterProfileController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DownloadController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\JobController;
+use App\Http\Controllers\MessagingController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Recruiter\JobController as RecruiterJobController;
+use App\Http\Controllers\Recruiter\ProfileController as RecruiterProfileController;
+use App\Http\Controllers\Recruiter\RecruiterController as RecruiterDashboardController;
+use Illuminate\Support\Facades\Route;
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Contact
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
-Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+Route::post('/contact', [ContactController::class, 'send'])
+    ->middleware('throttle:contact')
+    ->name('contact.send');
 
 // Download CV (protected route)
 Route::middleware(['auth'])->group(function () {
@@ -36,16 +38,20 @@ Route::middleware(['auth'])->group(function () {
 
 // Auth
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
 
 // Password reset
 Route::get('/mot-de-passe-oublie', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('/mot-de-passe-email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::post('/mot-de-passe-email', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->middleware('throttle:password-reset')
+    ->name('password.email');
 Route::get('/reinitialiser/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-Route::post('/reinitialiser', [ResetPasswordController::class, 'reset'])->name('password.update');
+Route::post('/reinitialiser', [ResetPasswordController::class, 'reset'])
+    ->middleware('throttle:password-reset')
+    ->name('password.update');
 
 // Jobs (public)
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');

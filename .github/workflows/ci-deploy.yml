@@ -3,6 +3,8 @@ name: CI & Deploy
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
@@ -10,12 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Laravel 12 exige PHP >= 8.2 (voir composer.json).
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
-          extensions: mbstring, xml, bcmath, pdo_mysql
+          php-version: '8.3'
+          extensions: mbstring, xml, bcmath, pdo_mysql, pdo_sqlite, zip, gd
           ini-values: post_max_size=256M, upload_max_filesize=256M
+          coverage: none
 
       - name: Cache Composer
         uses: actions/cache@v4
@@ -30,25 +34,33 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
+          cache: npm
 
-      - name: Install Node dependencies and build
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Prepare environment
         run: |
-          if [ -f package.json ]; then
-            npm ci
-            npm run build || true
-          fi
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Check code style
+        run: ./vendor/bin/pint --test
 
       - name: Run tests
-        run: |
-          if [ -f phpunit.xml ] || [ -d tests ]; then
-            composer test || php artisan test || true
-          fi
+        run: php artisan test
+
+      - name: Audit PHP dependencies
+        run: composer audit --abandoned=ignore
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
 
@@ -65,9 +77,11 @@ jobs:
             git fetch --all
             git reset --hard origin/main
             composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+            npm ci
+            npm run build
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
-            php artisan storage:link || true
-            sudo systemctl reload nginx || true
+            php artisan storage:link
+            sudo systemctl reload nginx

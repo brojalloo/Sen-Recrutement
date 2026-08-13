@@ -13,7 +13,7 @@ class CandidateController extends Controller
     {
         $userId = Auth::id();
         $recentApplications = Application::query()->where('user_id', $userId)->orderByDesc('created_at')->limit(5)->get();
-        $recommendedJobs = Job::query()->orderByDesc('created_at')->limit(4)->get();
+        $recommendedJobs = Job::visible()->orderByDesc('created_at')->limit(4)->get();
 
         return view('candidate.dashboard', compact('recentApplications', 'recommendedJobs'));
     }

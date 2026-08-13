@@ -10,13 +10,7 @@ class JobController extends Controller
     public function index(Request $request)
     {
         $perPage = 12;
-        $query = Job::query();
-
-        // Uniquement les offres approuvées et actives
-        $query->where('approval_status', 'approved')
-            ->where(function ($q) {
-                $q->where('status', 'active')->orWhere('is_active', true);
-            });
+        $query = Job::visible();
 
         // Filters
         if ($keyword = $request->input('keyword')) {
@@ -46,8 +40,7 @@ class JobController extends Controller
 
     public function show($id)
     {
-        // Vérifier que l'offre est approuvée pour le public
-        $job = Job::where('approval_status', 'approved')->findOrFail($id);
+        $job = Job::visible()->findOrFail($id);
 
         return view('job.show', compact('job'));
     }

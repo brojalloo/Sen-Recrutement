@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -57,6 +58,24 @@ class Job extends Model
         'Freelance' => 'Freelance',
         'Interim' => 'Intérim',
     ];
+
+    /**
+     * Offres visibles du public : approuvées par un admin et actives.
+     *
+     * Source de vérité unique. Dupliquer ce filtre dans les contrôleurs est ce
+     * qui a laissé les offres en attente et rejetées s'afficher en page
+     * d'accueil et sur le tableau de bord candidat.
+     *
+     * @param  Builder<Job>  $query
+     * @return Builder<Job>
+     */
+    public function scopeVisible(Builder $query): Builder
+    {
+        return $query->where('approval_status', 'approved')
+            ->where(function (Builder $q) {
+                $q->where('status', 'active')->orWhere('is_active', true);
+            });
+    }
 
     // Relations
     public function recruiter()

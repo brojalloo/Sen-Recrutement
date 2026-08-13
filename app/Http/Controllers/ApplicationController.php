@@ -13,14 +13,14 @@ class ApplicationController extends Controller
 {
     public function applyForm($id)
     {
-        $job = Job::findOrFail($id);
+        $job = Job::visible()->findOrFail($id);
 
         return view('candidate.apply', compact('job'));
     }
 
     public function applyStore(Request $request, $id)
     {
-        $job = Job::findOrFail($id);
+        $job = Job::visible()->findOrFail($id);
         $userId = Auth::id();
 
         $data = $request->validate([

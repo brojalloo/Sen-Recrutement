@@ -81,6 +81,25 @@ jobs:
               test -f vendor/autoload.php
             '
 
+      # Le dépôt est monté par-dessus /var/www/html, et vendor comme
+      # public/build sont gitignorés donc absents du checkout. C'est
+      # exactement le cas que les volumes nommés doivent couvrir.
+      - name: Verify the local compose stack boots
+        run: |
+          docker compose up -d
+          for i in $(seq 1 40); do
+            if curl -fsS http://localhost:8000/up > /dev/null; then
+              echo "L'application répond sur /up"
+              docker compose down -v
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "L'application n'a jamais répondu."
+          docker compose ps
+          docker compose logs --no-color
+          exit 1
+
   deploy:
     needs: [build, docker]
     runs-on: ubuntu-latest

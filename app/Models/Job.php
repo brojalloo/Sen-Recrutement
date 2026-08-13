@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Job extends Model
 {
@@ -78,12 +80,18 @@ class Job extends Model
     }
 
     // Relations
-    public function recruiter()
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function recruiter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'recruiter_id');
     }
 
-    public function applications()
+    /**
+     * @return HasMany<Application, $this>
+     */
+    public function applications(): HasMany
     {
         return $this->hasMany(Application::class);
     }

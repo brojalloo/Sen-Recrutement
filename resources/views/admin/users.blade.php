@@ -45,7 +45,7 @@
               </div>
               <div>
                 <small class="text-muted d-block">Candidats</small>
-                <h4 class="fw-bold mb-0">{{ $users->where('role', 'candidate')->count() }}</h4>
+                <h4 class="fw-bold mb-0">{{ $roleCounts['candidate'] }}</h4>
               </div>
             </div>
           </div>
@@ -60,7 +60,7 @@
               </div>
               <div>
                 <small class="text-muted d-block">Recruteurs</small>
-                <h4 class="fw-bold mb-0">{{ $users->where('role', 'recruiter')->count() }}</h4>
+                <h4 class="fw-bold mb-0">{{ $roleCounts['recruiter'] }}</h4>
               </div>
             </div>
           </div>
@@ -75,7 +75,7 @@
               </div>
               <div>
                 <small class="text-muted d-block">Admins</small>
-                <h4 class="fw-bold mb-0">{{ $users->where('role', 'admin')->count() }}</h4>
+                <h4 class="fw-bold mb-0">{{ $roleCounts['admin'] }}</h4>
               </div>
             </div>
           </div>

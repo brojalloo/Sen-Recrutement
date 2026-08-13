@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Application extends Model
 {
@@ -42,12 +43,18 @@ class Application extends Model
     ];
 
     // Relations
-    public function job()
+    /**
+     * @return BelongsTo<Job, $this>
+     */
+    public function job(): BelongsTo
     {
         return $this->belongsTo(Job::class);
     }
 
-    public function user()
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

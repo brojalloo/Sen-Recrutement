@@ -29,6 +29,16 @@ class ApplicationController extends Controller
             'cv' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
         ]);
 
+        // Doublé par un index unique sur (job_id, user_id) : ce contrôle sert à
+        // rendre un message clair, pas à garantir l'unicité.
+        $already = Application::where('job_id', $job->id)->where('user_id', $userId)->exists();
+
+        if ($already) {
+            return back()
+                ->withInput()
+                ->withErrors(['job_id' => 'Vous avez déjà postulé à cette offre.']);
+        }
+
         $cvPath = null;
         if ($request->hasFile('cv')) {
             $cvPath = $request->file('cv')->store('cvs', 'public');

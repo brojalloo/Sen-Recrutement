@@ -12,14 +12,22 @@ class MessagingController extends Controller
 {
     public function inbox()
     {
-        $messages = Message::query()->where('recipient_id', Auth::id())->orderByDesc('created_at')->paginate(20);
+        $messages = Message::query()
+            ->with('sender')
+            ->where('recipient_id', Auth::id())
+            ->orderByDesc('created_at')
+            ->paginate(20);
 
         return view('messaging.inbox', compact('messages'));
     }
 
     public function outbox()
     {
-        $messages = Message::query()->where('sender_id', Auth::id())->orderByDesc('created_at')->paginate(20);
+        $messages = Message::query()
+            ->with('recipient')
+            ->where('sender_id', Auth::id())
+            ->orderByDesc('created_at')
+            ->paginate(20);
 
         return view('messaging.outbox', compact('messages'));
     }

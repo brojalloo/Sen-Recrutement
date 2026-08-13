@@ -42,8 +42,8 @@
                         <i class="bi bi-person"></i>
                       </div>
                       <div>
-                        <h6 class="mb-0 fw-semibold">{{ optional(\App\Models\User::find($m->sender_id))->full_name ?? 'Utilisateur' }}</h6>
-                        <small class="text-muted">{{ optional(\App\Models\User::find($m->sender_id))->email ?? 'N/A' }}</small>
+                        <h6 class="mb-0 fw-semibold">{{ optional($m->sender)->full_name ?? 'Utilisateur' }}</h6>
+                        <small class="text-muted">{{ optional($m->sender)->email ?? 'N/A' }}</small>
                       </div>
                     </div>
                   </td>

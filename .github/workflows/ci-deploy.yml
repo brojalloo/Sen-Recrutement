@@ -57,6 +57,17 @@ jobs:
       - name: Audit PHP dependencies
         run: composer audit --abandoned=ignore
 
+      # Le déploiement récupère cet artefact au lieu de recompiler sur le
+      # serveur : on livre exactement les assets qui viennent d'être testés,
+      # et la production n'a pas besoin de Node.
+      - name: Keep the compiled assets for the deploy job
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-build
+          path: public/build
+          retention-days: 1
+          if-no-files-found: error
+
   # L'image se construisait "avec succès" alors que composer install échouait,
   # masqué par un || true. Ce job la construit pour de bon et vérifie que ce
   # que ce masquage cachait est bien présent.
@@ -107,6 +118,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Fetch the assets built and tested by the build job
+        uses: actions/download-artifact@v4
+        with:
+          name: public-build
+          path: public/build
+
+      # public/build est gitignoré, donc le git reset du script ci-dessous ne
+      # le touche pas : l'ordre entre l'envoi et le déploiement est sans effet.
+      - name: Upload the assets
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          source: public/build/*
+          target: /var/www/your_project/public/build
+          strip_components: 2
+          overwrite: true
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -114,14 +145,16 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT }}
+          # Pas de npm ici : les assets arrivent compilés depuis la CI. Les
+          # compiler sur place imposerait Node en production et, avec set -e,
+          # une absence de Node couperait le déploiement après le git reset et
+          # les migrations, laissant le serveur à moitié à jour.
           script: |
             set -e
             cd /var/www/your_project || exit 1
             git fetch --all
             git reset --hard origin/main
             composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-            npm ci
-            npm run build
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache

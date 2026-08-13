@@ -57,7 +57,8 @@
                         <i class="bi bi-person-gear"></i>
                       </div>
                       <div>
-                        <h6 class="mb-0 fw-semibold">Admin #{{ $log->user_id }}</h6>
+                        <h6 class="mb-0 fw-semibold">{{ optional($log->user)->full_name ?? optional($log->user)->name ?? 'Admin supprimé' }}</h6>
+                        <small class="text-muted">{{ optional($log->user)->email ?? '#'.$log->user_id }}</small>
                       </div>
                     </div>
                   </td>

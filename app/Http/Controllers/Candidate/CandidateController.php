@@ -12,7 +12,12 @@ class CandidateController extends Controller
     public function dashboard()
     {
         $userId = Auth::id();
-        $recentApplications = Application::query()->where('user_id', $userId)->orderByDesc('created_at')->limit(5)->get();
+        $recentApplications = Application::query()
+            ->with('job')
+            ->where('user_id', $userId)
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get();
         $recommendedJobs = Job::visible()->orderByDesc('created_at')->limit(4)->get();
 
         return view('candidate.dashboard', compact('recentApplications', 'recommendedJobs'));

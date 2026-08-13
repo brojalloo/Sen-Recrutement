@@ -57,8 +57,32 @@ jobs:
       - name: Audit PHP dependencies
         run: composer audit --abandoned=ignore
 
+  # L'image se construisait "avec succès" alors que composer install échouait,
+  # masqué par un || true. Ce job la construit pour de bon et vérifie que ce
+  # que ce masquage cachait est bien présent.
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the image
+        run: docker build -t sen-recrutement:ci .
+
+      - name: Verify the image boots and is complete
+        run: |
+          docker run --rm \
+            -e APP_KEY=base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= \
+            sen-recrutement:ci \
+            sh -c '
+              set -e
+              php artisan --version
+              test -d public/build
+              test -L public/storage
+              test -f vendor/autoload.php
+            '
+
   deploy:
-    needs: build
+    needs: [build, docker]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:

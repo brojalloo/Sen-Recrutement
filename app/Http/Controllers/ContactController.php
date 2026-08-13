@@ -21,9 +21,19 @@ class ContactController extends Controller
             'message' => 'required|string',
         ]);
 
-        Mail::send('emails.contact', $data, function ($m) use ($data) {
+        // La clé 'message' est réservée : Mail::send injecte l'objet Message
+        // dans la vue et écraserait le texte du visiteur.
+        $payload = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'subject' => $data['subject'],
+            'body' => $data['message'],
+        ];
+
+        Mail::send('emails.contact', $payload, function ($m) use ($data) {
             $m->to(config('mail.from.address'))
-              ->subject('[Contact] ' . $data['subject']);
+                ->replyTo($data['email'], $data['name'])
+                ->subject('[Contact] '.$data['subject']);
         });
 
         return back()->with('status', 'Message envoyé avec succès.');

@@ -6,6 +6,7 @@ use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class MessagingController extends Controller
 {
@@ -25,15 +26,23 @@ class MessagingController extends Controller
 
     public function compose()
     {
-        $users = User::query()->orderBy('email')->limit(100)->get();
+        // Ne charger que les colonnes affichées : le reste du profil
+        // (téléphone, adresse, bio) n'a rien à faire dans la vue.
+        $users = User::contactableBy(Auth::user())
+            ->orderBy('email')
+            ->get(['id', 'name', 'first_name', 'last_name', 'email']);
 
         return view('messaging.compose', compact('users'));
     }
 
     public function send(Request $request)
     {
+        // Même source de vérité que compose() : filtrer la liste sans valider
+        // l'envoi laisserait passer n'importe quel recipient_id posté à la main.
+        $allowed = User::contactableBy(Auth::user())->pluck('id')->all();
+
         $data = $request->validate([
-            'recipient_id' => ['required', 'exists:users,id'],
+            'recipient_id' => ['required', Rule::in($allowed)],
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:5000'],
             'type' => ['nullable', 'string'],

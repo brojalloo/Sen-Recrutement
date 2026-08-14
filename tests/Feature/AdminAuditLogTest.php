@@ -101,4 +101,22 @@ class AdminAuditLogTest extends TestCase
             $csv
         );
     }
+
+    public function test_the_log_export_names_the_admin_and_keeps_the_description(): void
+    {
+        $job = $this->job();
+
+        $this->actingAs($this->admin)->put("/admin/jobs/{$job->id}/approve");
+
+        $csv = $this->actingAs($this->admin)->get('/admin/logs/export')->streamedContent();
+
+        // Un identifiant numérique n'apprend rien à qui relit un journal
+        // d'audit six mois plus tard. Les colonnes sont ajoutées en fin de
+        // ligne : les quatre premières gardent leur position, pour ne rien
+        // casser en aval.
+        $this->assertStringContainsString($this->admin->email, $csv);
+        $this->assertStringContainsString('Offre approuvée', $csv);
+        // PHP entoure de guillemets les champs contenant une espace.
+        $this->assertStringContainsString('ID,"Admin ID",Action,"Created At",Admin,Description,IP', $csv);
+    }
 }

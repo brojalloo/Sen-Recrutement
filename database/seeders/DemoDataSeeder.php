@@ -277,7 +277,17 @@ class DemoDataSeeder extends Seeder
             ],
         ];
 
-        foreach ($jobs as $jobData) {
+        // `approval_status` n'était jamais renseigné : toutes les offres
+        // restaient en attente et la démonstration s'ouvrait sur une page
+        // d'accueil vide. Les deux dernières restent volontairement en
+        // attente, pour que la file de modération de l'admin ait de quoi
+        // montrer.
+        $pendingCount = 2;
+        $lastApproved = count($jobs) - $pendingCount;
+
+        foreach ($jobs as $index => $jobData) {
+            $jobData['approval_status'] = $index < $lastApproved ? 'approved' : 'pending';
+
             Job::create($jobData);
         }
 

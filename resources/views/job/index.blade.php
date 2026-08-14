@@ -5,7 +5,7 @@
 @endpush
 
 @section('content')
-<div style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); min-height: calc(100vh - 200px);">
+<div class="page-surface">
   <div class="container py-5">
     <!-- Header -->
     <div class="text-center mb-5">
@@ -21,22 +21,22 @@
       <div class="card-body p-4">
         <form class="row g-3" method="GET">
           <div class="col-lg-4 col-md-6">
-            <label class="form-label fw-semibold">
+            <label class="form-label fw-semibold" for="filtre-keyword">
               <i class="bi bi-search me-2 text-primary"></i>Mot-clé
             </label>
-            <input type="text" name="keyword" value="{{ request('keyword') }}" class="form-control form-control-lg" placeholder="Ex: Développeur, Manager...">
+            <input type="text" name="keyword" value="{{ request('keyword') }}" class="form-control form-control-lg" placeholder="Ex: Développeur, Manager..." id="filtre-keyword">
           </div>
           <div class="col-lg-3 col-md-6">
-            <label class="form-label fw-semibold">
+            <label class="form-label fw-semibold" for="filtre-location">
               <i class="bi bi-geo-alt me-2 text-primary"></i>Localisation
             </label>
-            <input type="text" name="location" value="{{ request('location') }}" class="form-control form-control-lg" placeholder="Ex: Dakar, Thiès...">
+            <input type="text" name="location" value="{{ request('location') }}" class="form-control form-control-lg" placeholder="Ex: Dakar, Thiès..." id="filtre-location">
           </div>
           <div class="col-lg-3 col-md-6">
-            <label class="form-label fw-semibold">
+            <label class="form-label fw-semibold" for="filtre-type">
               <i class="bi bi-briefcase me-2 text-primary"></i>Type de contrat
             </label>
-            <select name="type" class="form-select form-select-lg">
+            <select name="type" class="form-select form-select-lg" id="filtre-type">
               <option value="">Tous les types</option>
               @foreach(\App\Models\Job::TYPES as $key=>$label)
                 <option value="{{ $key }}" @selected(request('type')===$key)>{{ $label }}</option>

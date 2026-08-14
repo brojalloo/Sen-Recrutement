@@ -5,7 +5,7 @@
 @endpush
 
 @section('content')
-<div style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); min-height: calc(100vh - 200px);">
+<div class="page-surface">
     <div class="container py-5">
         <!-- Header -->
         <div class="mb-5">

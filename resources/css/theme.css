@@ -647,3 +647,27 @@ html[data-theme="light"] *,
 html[data-theme="dark"] * {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
+
+/* Fonds utilitaires Bootstrap en thème sombre.
+   Le thème bascule déjà `.text-dark` vers une couleur claire, mais laissait
+   `.bg-light` et `.bg-white` en clair : un `badge bg-light text-dark` sortait
+   donc en clair sur clair, illisible — un rectangle blanc à l'écran. Ces deux
+   utilitaires sont employés 35 fois dans les vues (en-têtes de cartes,
+   badges de localisation) ; les basculer ici évite de reprendre chaque vue. */
+[data-theme="dark"] .bg-light {
+  background-color: var(--bg-secondary) !important;
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: var(--bg-card) !important;
+}
+
+/* Texte indicatif des champs en thème sombre.
+   Bootstrap le laisse en quasi-noir : sur le fond bleu nuit des champs, le
+   contraste tombait à environ 1:1, autrement dit invisible. Ce gris clair
+   remonte à environ 6:1, au-dessus du seuil AA. */
+[data-theme="dark"] .form-control::placeholder,
+[data-theme="dark"] .form-select::placeholder {
+  color: #94a3b8;
+  opacity: 1;
+}

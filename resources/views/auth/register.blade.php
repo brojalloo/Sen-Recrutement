@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@push('styles')
+    @vite('resources/css/pages/auth-register.css')
+@endpush
+
 @section('content')
 <div class="auth-wrapper">
   <div class="container py-5">
@@ -10,7 +14,7 @@
             <!-- Illustration Side -->
             <div class="col-lg-5 d-none d-lg-flex align-items-center justify-content-center p-5" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(6, 182, 212, 0.05));">
               <div class="text-center">
-                <img src="https://illustrations.popsy.co/violet/success.svg" class="img-fluid mb-4" alt="Inscription" style="max-width: 280px;">
+                <img src="{{ asset('assets/images/success.svg') }}" class="img-fluid mb-4" alt="Inscription" style="max-width: 280px;">
                 <h3 class="fw-bold mb-3">Rejoignez-nous !</h3>
                 <p class="text-muted">Créez votre compte et accédez à des milliers d'opportunités professionnelles.</p>
                 <div class="mt-4">
@@ -100,7 +104,7 @@
                              placeholder="••••••••" 
                              required>
                       <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted" 
-                              onclick="togglePassword('password')" tabindex="-1">
+                              data-toggle-password="password" tabindex="-1">
                         <i class="bi bi-eye" id="password-icon"></i>
                       </button>
                     </div>
@@ -119,7 +123,7 @@
                              placeholder="••••••••" 
                              required>
                       <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted" 
-                              onclick="togglePassword('password_confirmation')" tabindex="-1">
+                              data-toggle-password="password_confirmation" tabindex="-1">
                         <i class="bi bi-eye" id="password_confirmation-icon"></i>
                       </button>
                     </div>
@@ -184,36 +188,5 @@
   </div>
 </div>
 
-<script>
-function togglePassword(id) {
-  const input = document.getElementById(id);
-  const icon = document.getElementById(id + '-icon');
-  if (input.type === 'password') {
-    input.type = 'text';
-    icon.classList.replace('bi-eye', 'bi-eye-slash');
-  } else {
-    input.type = 'password';
-    icon.classList.replace('bi-eye-slash', 'bi-eye');
-  }
-}
-</script>
 
-<style>
-.auth-wrapper {
-  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
-  min-height: calc(100vh - 200px);
-}
-.min-vh-75 {
-  min-height: 75vh;
-}
-.auth-form .form-control:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-}
-.role-selection .btn-check:checked + .btn {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  color: white;
-  border-color: var(--color-primary);
-}
-</style>
 @endsection

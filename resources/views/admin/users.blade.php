@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@push('styles')
+    @vite('resources/css/pages/admin-users.css')
+@endpush
+
 @section('content')
 <div style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); min-height: calc(100vh - 200px);">
   <div class="container py-5">
@@ -300,31 +304,4 @@
 </div>
 @endforeach
 
-<style>
-.bg-gradient-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-.info-group {
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 0.5rem;
-  border-left: 3px solid #667eea;
-}
-.avatar-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-}
-.table tbody tr {
-  transition: all 0.3s ease;
-}
-.table tbody tr:hover {
-  background-color: rgba(79, 70, 229, 0.02);
-  transform: scale(1.005);
-}
-</style>
 @endsection

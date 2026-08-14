@@ -15,7 +15,7 @@
             <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center p-5" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(6, 182, 212, 0.05));">
               <div class="text-center">
                 <img src="{{ asset('assets/images/remote-work.svg') }}" class="img-fluid mb-4" alt="Connexion" style="max-width: 320px;">
-                <h3 class="fw-bold mb-3">Content de vous revoir !</h3>
+                <p class="h3 fw-bold mb-3">Content de vous revoir !</p>
                 <p class="text-muted">Accédez à votre espace personnel et gérez vos opportunités professionnelles.</p>
               </div>
             </div>
@@ -23,7 +23,9 @@
             <!-- Form Side -->
             <div class="col-lg-6 p-5">
               <div class="mb-4">
-                <h2 class="fw-bold mb-2">Connexion</h2>
+                {{-- Titre de premier niveau de la page : la connexion est son
+                     sujet, pas l'illustration d'accueil qui la précède. --}}
+                <h1 class="h2 fw-bold mb-2">Connexion</h1>
                 <p class="text-muted">Bienvenue sur votre plateforme de recrutement</p>
               </div>
 
@@ -62,7 +64,7 @@
                            placeholder="••••••••" 
                            required>
                     <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted" 
-                            data-toggle-password="password" tabindex="-1">
+                            data-toggle-password="password" aria-label="Afficher ou masquer le mot de passe" tabindex="-1">
                       <i class="bi bi-eye" id="password-icon"></i>
                     </button>
                   </div>

@@ -14,11 +14,16 @@
           Une candidature simplifiée pour votre réussite professionnelle.
         </p>
         <form class="row g-3 search-form" method="GET" action="{{ route('jobs.index') }}">
+          {{-- Étiquettes masquées visuellement : la barre de recherche ne
+               montre que des placeholders, qu'un lecteur d'écran n'annonce
+               pas de façon fiable. La mise en page reste inchangée. --}}
           <div class="col-md-5">
-            <input name="keyword" class="form-control" placeholder="Poste, compétence, entreprise...">
+            <label for="recherche-keyword" class="visually-hidden">Poste, compétence ou entreprise</label>
+            <input id="recherche-keyword" name="keyword" class="form-control" placeholder="Poste, compétence, entreprise...">
           </div>
           <div class="col-md-4">
-            <input name="location" class="form-control" placeholder="Dakar, Thiès, Saint-Louis...">
+            <label for="recherche-location" class="visually-hidden">Localisation</label>
+            <input id="recherche-location" name="location" class="form-control" placeholder="Dakar, Thiès, Saint-Louis...">
           </div>
           <div class="col-md-3">
             <button class="btn btn-primary w-100" type="submit">

@@ -4,6 +4,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>@yield('title','SEN Recrutement - Plateforme Professionnelle')</title>
+
+  @php($metaDescription = trim($__env->yieldContent('description', "Trouvez l'emploi qui vous correspond au Sénégal. Offres de qualité, entreprises réputées, candidature simplifiée.")))
+  <meta name="description" content="{{ $metaDescription }}">
+  <link rel="canonical" href="{{ url()->current() }}">
+
+  {{-- Open Graph : sans ces balises, un lien partagé sur WhatsApp ou
+       LinkedIn — par où passe l'essentiel du partage d'offres — s'affiche
+       comme une URL nue, sans titre ni description. --}}
+  <meta property="og:site_name" content="SEN Recrutement">
+  <meta property="og:locale" content="fr_SN">
+  <meta property="og:type" content="@yield('og_type', 'website')">
+  <meta property="og:title" content="@yield('title','SEN Recrutement - Plateforme Professionnelle')">
+  <meta property="og:description" content="{{ $metaDescription }}">
+  <meta property="og:url" content="{{ url()->current() }}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  @stack('head')
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   {{-- Styles propres à la page : plusieurs pages définissent les mêmes
        sélecteurs avec des valeurs différentes, chacune ne charge donc que
@@ -11,13 +28,18 @@
   @stack('styles')
 </head>
 <body>
+{{-- Premier élément focalisable de la page : permet de sauter la navigation,
+     répétée à l'identique sur chaque page, pour aller droit au contenu. --}}
+<a class="skip-link" href="#contenu-principal">Aller au contenu principal</a>
+
 <nav class="navbar navbar-expand-lg navbar-premium sticky-top">
   <div class="container py-2">
     <a class="navbar-brand d-flex align-items-center navbar-brand-premium" href="{{ route('home') }}">
       <i class="bi bi-briefcase-fill me-2" style="font-size: 1.75rem;"></i>
       <span>SEN Recrutement</span>
     </a>
-    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+            aria-controls="mainNav" aria-expanded="false" aria-label="Ouvrir le menu de navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="mainNav">
@@ -40,7 +62,7 @@
             </a>
           </li>
           <li class="nav-item me-2">
-            <button id="themeToggle" class="btn btn-sm btn-outline-secondary border-0 theme-toggle" title="Changer le thème">
+            <button id="themeToggle" class="btn btn-sm btn-outline-secondary border-0 theme-toggle" type="button" aria-label="Basculer entre le thème clair et le thème sombre">
               <i class="bi bi-sun-fill" id="themeIcon"></i>
             </button>
           </li>
@@ -107,7 +129,7 @@
           </li>
         @else
           <li class="nav-item me-2">
-            <button id="themeToggle" class="btn btn-sm btn-outline-secondary border-0 theme-toggle" title="Changer le thème">
+            <button id="themeToggle" class="btn btn-sm btn-outline-secondary border-0 theme-toggle" type="button" aria-label="Basculer entre le thème clair et le thème sombre">
               <i class="bi bi-sun-fill" id="themeIcon"></i>
             </button>
           </li>
@@ -135,7 +157,7 @@
 </nav>
 
 
-<main>
+<main id="contenu-principal" tabindex="-1">
   @yield('content')
 </main>
 

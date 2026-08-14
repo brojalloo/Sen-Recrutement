@@ -20,10 +20,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Recruiter\JobController as RecruiterJobController;
 use App\Http\Controllers\Recruiter\ProfileController as RecruiterProfileController;
 use App\Http\Controllers\Recruiter\RecruiterController as RecruiterDashboardController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Référencement
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 // Contact
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');

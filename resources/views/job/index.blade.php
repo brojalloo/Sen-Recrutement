@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@push('styles')
+    @vite('resources/css/pages/job-index.css')
+@endpush
+
 @section('content')
 <div style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); min-height: calc(100vh - 200px);">
   <div class="container py-5">
@@ -124,23 +128,4 @@
   </div>
 </div>
 
-<style>
-.job-card {
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-.job-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12) !important;
-}
-.avatar-circle {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-}
-</style>
 @endsection

@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@push('styles')
+    @vite('resources/css/pages/candidate-dashboard.css')
+@endpush
+
 @section('content')
 <div style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); min-height: calc(100vh - 200px);">
   <div class="container py-5">
@@ -190,45 +194,4 @@
   </div>
 </div>
 
-<style>
-.stat-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden;
-  position: relative;
-}
-.stat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.25) !important;
-}
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 200px;
-  height: 200px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  transition: transform 0.6s ease;
-}
-.stat-card:hover::before {
-  transform: scale(1.5);
-}
-.avatar-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  flex-shrink: 0;
-}
-.list-group-item {
-  transition: all 0.3s ease;
-}
-.list-group-item:hover {
-  background-color: rgba(79, 70, 229, 0.03);
-}
-</style>
 @endsection

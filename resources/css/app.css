@@ -1,11 +1,33 @@
-@import 'tailwindcss';
+/*
+ * Feuille commune à toutes les pages.
+ *
+ * Bootstrap, les icônes et les polices étaient chargés depuis des CDN
+ * (jsdelivr, Google Fonts) : trois dépendances externes sur le chemin critique
+ * du rendu, une CSP impossible à durcir, et les adresses IP des visiteurs
+ * envoyées à Google à chaque page. Tout est désormais compilé par Vite depuis
+ * node_modules.
+ *
+ * L'ordre compte : Bootstrap d'abord, puis le thème et le layout qui le
+ * surchargent. Les styles propres à une page ne sont pas ici — ils sont
+ * chargés par la page elle-même (voir @push('styles')), parce que plusieurs
+ * pages définissent le même sélecteur avec des valeurs différentes.
+ */
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-}
+/* Uniquement les graisses utilisées par les vues, et le seul sous-ensemble
+   latin : @fontsource embarque sinon le cyrillique, le grec et le devanagari,
+   inutiles ici. */
+@import '@fontsource/inter/latin-400.css';
+@import '@fontsource/inter/latin-500.css';
+@import '@fontsource/inter/latin-600.css';
+@import '@fontsource/inter/latin-700.css';
+@import '@fontsource/inter/latin-800.css';
+@import '@fontsource/poppins/latin-400.css';
+@import '@fontsource/poppins/latin-600.css';
+@import '@fontsource/poppins/latin-700.css';
+@import '@fontsource/poppins/latin-800.css';
+
+@import './theme.css';
+@import './layout.css';

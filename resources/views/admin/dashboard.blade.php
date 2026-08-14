@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@push('styles')
+    @vite('resources/css/pages/admin-dashboard.css')
+@endpush
+
 @section('content')
 <div class="admin-dashboard" style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); min-height: calc(100vh - 200px);">
   <div class="container py-5">
@@ -186,10 +190,10 @@
                             <i class="bi bi-check-lg me-1"></i>Approuver
                           </button>
                         </form>
-                        <form method="POST" action="{{ route('admin.jobs.reject', $job->id) }}" class="d-inline">
+                        <form method="POST" action="{{ route('admin.jobs.reject', $job->id) }}" class="d-inline" data-confirm="Êtes-vous sûr de vouloir rejeter cette offre ?">
                           @csrf
                           @method('PUT')
-                          <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir rejeter cette offre ?')">
+                          <button type="submit" class="btn btn-sm btn-danger">
                             <i class="bi bi-x-lg me-1"></i>Rejeter
                           </button>
                         </form>
@@ -300,61 +304,4 @@
   </div>
 </div>
 
-<style>
-.stat-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden;
-  position: relative;
-}
-.stat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.25) !important;
-}
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 200px;
-  height: 200px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  transition: transform 0.6s ease;
-}
-.stat-card:hover::before {
-  transform: scale(1.5);
-}
-.avatar-circle {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  flex-shrink: 0;
-}
-.list-group-item {
-  transition: background-color 0.3s ease;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-.list-group-item:hover {
-  background-color: rgba(79, 70, 229, 0.03);
-}
-.min-width-0 {
-  min-width: 0;
-}
-.text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.rounded-premium {
-  border-radius: 16px;
-}
-.shadow-premium {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-</style>
 @endsection

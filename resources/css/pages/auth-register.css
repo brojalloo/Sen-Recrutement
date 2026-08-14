@@ -1,0 +1,16 @@
+.auth-wrapper {
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  min-height: calc(100vh - 200px);
+}
+.min-vh-75 {
+  min-height: 75vh;
+}
+.auth-form .form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+.role-selection .btn-check:checked + .btn {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+  border-color: var(--color-primary);
+}

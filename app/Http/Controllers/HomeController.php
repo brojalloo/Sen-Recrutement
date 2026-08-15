@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $recentJobs = Job::visible()->orderByDesc('created_at')->limit(6)->get();
         $popularJobs = Job::visible()->orderByDesc('views')->limit(6)->get();

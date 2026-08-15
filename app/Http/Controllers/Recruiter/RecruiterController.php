@@ -9,10 +9,11 @@ use App\Notifications\ApplicationStatusChanged;
 use App\Support\NotificationDispatcher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class RecruiterController extends Controller
 {
-    public function dashboard()
+    public function dashboard(): View
     {
         $userId = Auth::id();
         $jobs = Job::query()->where('recruiter_id', $userId)->orderByDesc('created_at')->limit(5)->get();
@@ -30,12 +31,12 @@ class RecruiterController extends Controller
         return view('recruiter.dashboard', compact('jobs', 'applications', 'stats'));
     }
 
-    public function acceptApplication(NotificationDispatcher $notifications, $id): RedirectResponse
+    public function acceptApplication(NotificationDispatcher $notifications, string $id): RedirectResponse
     {
         return $this->decide($notifications, $id, 'accepted', 'Candidature acceptée avec succès !');
     }
 
-    public function rejectApplication(NotificationDispatcher $notifications, $id): RedirectResponse
+    public function rejectApplication(NotificationDispatcher $notifications, string $id): RedirectResponse
     {
         return $this->decide($notifications, $id, 'rejected', 'Candidature refusée.');
     }

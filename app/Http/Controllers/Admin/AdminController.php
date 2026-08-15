@@ -7,10 +7,12 @@ use App\Models\AdminLog;
 use App\Models\Application;
 use App\Models\Job;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class AdminController extends Controller
 {
-    public function dashboard()
+    public function dashboard(): View
     {
         $stats = [
             'users' => [
@@ -42,7 +44,7 @@ class AdminController extends Controller
         return view('admin.dashboard', compact('stats', 'recentUsers', 'pendingJobs', 'recentLogs'));
     }
 
-    public function approveJob($id)
+    public function approveJob(string $id): RedirectResponse
     {
         $job = Job::findOrFail($id);
         $job->update(['approval_status' => 'approved']);
@@ -57,7 +59,7 @@ class AdminController extends Controller
         return back()->with('status', 'Offre approuvée avec succès !');
     }
 
-    public function rejectJob($id)
+    public function rejectJob(string $id): RedirectResponse
     {
         $job = Job::findOrFail($id);
         $job->update(['approval_status' => 'rejected']);
@@ -72,7 +74,7 @@ class AdminController extends Controller
         return back()->with('status', 'Offre rejetée.');
     }
 
-    public function toggleUserStatus($id)
+    public function toggleUserStatus(string $id): RedirectResponse
     {
         $user = User::findOrFail($id);
         $newStatus = $user->status === 'active' ? 'inactive' : 'active';

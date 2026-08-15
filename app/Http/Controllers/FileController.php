@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Application;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileController extends Controller
 {
-    public function downloadCv($applicationId)
+    public function downloadCv(string $applicationId): StreamedResponse
     {
         $app = Application::with('job')->findOrFail($applicationId);
 

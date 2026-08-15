@@ -7,19 +7,21 @@ use App\Models\Job;
 use App\Models\User;
 use App\Notifications\NewApplicationReceived;
 use App\Support\NotificationDispatcher;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class ApplicationController extends Controller
 {
-    public function applyForm($id)
+    public function applyForm(string $id): View
     {
         $job = Job::visible()->findOrFail($id);
 
         return view('candidate.apply', compact('job'));
     }
 
-    public function applyStore(Request $request, NotificationDispatcher $notifications, $id)
+    public function applyStore(Request $request, NotificationDispatcher $notifications, string $id): RedirectResponse
     {
         $job = Job::visible()->findOrFail($id);
         $userId = Auth::id();

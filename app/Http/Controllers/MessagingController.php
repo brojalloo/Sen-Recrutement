@@ -4,27 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class MessagingController extends Controller
 {
-    public function inbox()
+    public function inbox(): View
     {
         $messages = Message::query()->where('recipient_id', Auth::id())->orderByDesc('created_at')->paginate(20);
 
         return view('messaging.inbox', compact('messages'));
     }
 
-    public function outbox()
+    public function outbox(): View
     {
         $messages = Message::query()->where('sender_id', Auth::id())->orderByDesc('created_at')->paginate(20);
 
         return view('messaging.outbox', compact('messages'));
     }
 
-    public function compose()
+    public function compose(): View
     {
         // Ne charger que les colonnes affichées : le reste du profil
         // (téléphone, adresse, bio) n'a rien à faire dans la vue.
@@ -35,7 +37,7 @@ class MessagingController extends Controller
         return view('messaging.compose', compact('users'));
     }
 
-    public function send(Request $request)
+    public function send(Request $request): RedirectResponse
     {
         // Même source de vérité que compose() : filtrer la liste sans valider
         // l'envoi laisserait passer n'importe quel recipient_id posté à la main.
@@ -60,7 +62,7 @@ class MessagingController extends Controller
         return redirect()->route('messages.outbox')->with('status', 'Message envoyé');
     }
 
-    public function markRead($id)
+    public function markRead(string $id): RedirectResponse
     {
         $msg = Message::findOrFail($id);
         $this->authorize('markAsRead', $msg);

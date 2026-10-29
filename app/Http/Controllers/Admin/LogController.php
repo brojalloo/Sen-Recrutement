@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdminLog;
+use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class LogController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $logs = AdminLog::query()->orderBy('id', 'desc')->paginate(50);
 
@@ -19,6 +20,10 @@ class LogController extends Controller
     {
         $response = new StreamedResponse(function () {
             $handle = fopen('php://output', 'w');
+
+            if ($handle === false) {
+                return;
+            }
 
             // Les colonnes utiles — qui a agi, et sur quoi — sont ajoutées à
             // la fin : un identifiant numérique n'apprend rien à qui relit un

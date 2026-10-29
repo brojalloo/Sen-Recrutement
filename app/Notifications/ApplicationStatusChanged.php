@@ -11,9 +11,9 @@ class ApplicationStatusChanged extends Notification
 {
     use Queueable;
 
-    protected $application;
+    protected Application $application;
 
-    protected $status;
+    protected string $status;
 
     public function __construct(Application $application, string $status)
     {
@@ -21,6 +21,9 @@ class ApplicationStatusChanged extends Notification
         $this->status = $status;
     }
 
+    /**
+     * @return list<string>
+     */
     public function via(object $notifiable): array
     {
         return ['mail'];
@@ -56,6 +59,9 @@ class ApplicationStatusChanged extends Notification
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(object $notifiable): array
     {
         return [

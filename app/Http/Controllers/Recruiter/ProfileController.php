@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Recruiter;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    public function edit()
+    public function edit(): View
     {
         return view('recruiter.profile', ['user' => Auth::user()]);
     }
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
         $user = Auth::user();
         $data = $request->validate([

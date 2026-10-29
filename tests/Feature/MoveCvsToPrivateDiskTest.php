@@ -12,6 +12,11 @@ use Tests\TestCase;
  */
 class MoveCvsToPrivateDiskTest extends TestCase
 {
+    /**
+     * Le type reste `object` : la classe de base `Migration` de Laravel ne
+     * déclare pas `up()`, la typer plus précisément ferait échouer l'analyse
+     * au lieu de l'aider.
+     */
     private function migration(): object
     {
         return require database_path('migrations/2026_08_13_140000_move_cvs_to_private_disk.php');

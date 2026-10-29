@@ -2,7 +2,7 @@ includes:
     - vendor/larastan/larastan/extension.neon
 
 parameters:
-    level: 5
+    level: 6
 
     paths:
         - app
@@ -10,10 +10,14 @@ parameters:
         - routes
         - tests
 
-    # Le code passe le niveau 5 sans aucune exception ni baseline : la CI
-    # échoue donc sur la moindre erreur, ancienne comme nouvelle.
+    # Le code passe le niveau 6 sans aucune exception, baseline ni
+    # @phpstan-ignore : la CI échoue donc sur la moindre erreur, ancienne
+    # comme nouvelle.
     #
-    # Prochain palier : le niveau 6 remonte 75 erreurs, essentiellement des
-    # types manquants sur les paramètres, les retours et les valeurs de
-    # tableaux. Rien d'urgent, mais c'est la marche suivante — et elle se
-    # monte fichier par fichier, pas d'un bloc.
+    # Le niveau 7 laisse neuf constats, tous des frictions du framework et
+    # aucun défaut réel : `Migration` ne déclare pas `up()`, `artisan()`
+    # renvoie `PendingCommand|int`, et Larastan déduit `int<0, max>` pour les
+    # colonnes non signées, qu'un simple `int` ne satisfait pas. Les faire
+    # taire demanderait des casts ou des ignores, c'est-à-dire dégrader le
+    # code pour flatter l'analyseur. Le passage au niveau 7 attendra que ces
+    # points se règlent en amont.

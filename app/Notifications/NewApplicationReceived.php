@@ -11,13 +11,16 @@ class NewApplicationReceived extends Notification
 {
     use Queueable;
 
-    protected $application;
+    protected Application $application;
 
     public function __construct(Application $application)
     {
         $this->application = $application;
     }
 
+    /**
+     * @return list<string>
+     */
     public function via(object $notifiable): array
     {
         return ['mail'];
@@ -44,6 +47,9 @@ class NewApplicationReceived extends Notification
             ->line('Connectez-vous à votre tableau de bord pour consulter les détails complets et gérer cette candidature.');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(object $notifiable): array
     {
         return [

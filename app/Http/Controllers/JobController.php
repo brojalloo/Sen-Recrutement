@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Job;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class JobController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $perPage = 12;
         $query = Job::visible();
@@ -38,7 +39,7 @@ class JobController extends Controller
         return view('job.index', compact('jobs'));
     }
 
-    public function show($id)
+    public function show(string $id): View
     {
         $job = Job::visible()->findOrFail($id);
 

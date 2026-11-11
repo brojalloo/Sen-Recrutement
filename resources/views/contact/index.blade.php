@@ -5,7 +5,7 @@
 @endpush
 
 @section('content')
-<div style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); min-height: calc(100vh - 200px);">
+<div class="page-surface">
   <div class="container py-5">
     <div class="row g-4">
       <!-- Left: Contact Info -->
@@ -106,31 +106,31 @@
               @csrf
               <div class="row g-4">
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold">
+                  <label class="form-label fw-semibold" for="contact-name">
                     <i class="bi bi-person me-2 text-primary"></i>Nom complet
                   </label>
-                  <input type="text" name="name" class="form-control form-control-lg" value="{{ old('name') }}" placeholder="Votre nom" required>
+                  <input type="text" name="name" class="form-control form-control-lg" value="{{ old('name') }}" placeholder="Votre nom" required id="contact-name">
                   @error('name')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold">
+                  <label class="form-label fw-semibold" for="contact-email">
                     <i class="bi bi-envelope me-2 text-primary"></i>Email
                   </label>
-                  <input type="email" name="email" class="form-control form-control-lg" value="{{ old('email') }}" placeholder="votre@email.com" required>
+                  <input type="email" name="email" class="form-control form-control-lg" value="{{ old('email') }}" placeholder="votre@email.com" required id="contact-email">
                   @error('email')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-12">
-                  <label class="form-label fw-semibold">
+                  <label class="form-label fw-semibold" for="contact-subject">
                     <i class="bi bi-tag me-2 text-primary"></i>Sujet
                   </label>
-                  <input type="text" name="subject" class="form-control form-control-lg" value="{{ old('subject') }}" placeholder="Objet de votre message" required>
+                  <input type="text" name="subject" class="form-control form-control-lg" value="{{ old('subject') }}" placeholder="Objet de votre message" required id="contact-subject">
                   @error('subject')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-12">
-                  <label class="form-label fw-semibold">
+                  <label class="form-label fw-semibold" for="contact-message">
                     <i class="bi bi-chat-left-text me-2 text-primary"></i>Message
                   </label>
-                  <textarea name="message" class="form-control form-control-lg" rows="6" placeholder="Écrivez votre message ici..." required>{{ old('message') }}</textarea>
+                  <textarea name="message" class="form-control form-control-lg" rows="6" placeholder="Écrivez votre message ici..." required id="contact-message">{{ old('message') }}</textarea>
                   @error('message')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-12">

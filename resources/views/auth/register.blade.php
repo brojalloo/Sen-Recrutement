@@ -104,7 +104,7 @@
                              placeholder="••••••••" 
                              required>
                       <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted" 
-                              data-toggle-password="password" tabindex="-1">
+                              data-toggle-password="password" aria-label="Afficher ou masquer le mot de passe" tabindex="-1">
                         <i class="bi bi-eye" id="password-icon"></i>
                       </button>
                     </div>
@@ -123,7 +123,7 @@
                              placeholder="••••••••" 
                              required>
                       <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted" 
-                              data-toggle-password="password_confirmation" tabindex="-1">
+                              data-toggle-password="password_confirmation" aria-label="Afficher ou masquer le mot de passe" tabindex="-1">
                         <i class="bi bi-eye" id="password_confirmation-icon"></i>
                       </button>
                     </div>

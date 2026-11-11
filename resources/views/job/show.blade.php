@@ -1,5 +1,14 @@
 @extends('layouts.app')
 
+@section('title', $job->title.' — '.$job->company.' | SEN Recrutement')
+@section('og_type', 'article')
+@section('description', Str::limit(strip_tags($job->description), 155))
+
+@push('head')
+  {{-- Données structurées lues par Google for Jobs. --}}
+  <script type="application/ld+json">{!! json_encode(\App\Support\JobPostingSchema::for($job), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+@endpush
+
 @section('content')
 <div class="container">
   <h1>{{ $job->title }}</h1>

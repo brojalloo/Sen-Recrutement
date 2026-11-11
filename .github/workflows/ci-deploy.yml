@@ -175,13 +175,13 @@ jobs:
     timeout-minutes: 25
     permissions:
       contents: read
-      packages: write
     concurrency:
       group: docker-dev-${{ github.ref }}
       cancel-in-progress: true
     env:
       COMPOSE_FILE: deploy/dev-local/compose.yaml
       DEV_IMAGE: sen-recrutement-docker-local:ci
+      DEV_REVISION: ${{ github.sha }}
       SEN_RECRUTEMENT_APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
 
     steps:
@@ -207,18 +207,18 @@ jobs:
         if: always()
         run: docker compose down --volumes
 
-      - name: Publier les images validées sur GHCR
+      - name: Préparer l’image validée
         if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          registry="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}"
-          image="$registry/sen-recrutement-docker-local"
-          echo "$GH_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+          docker tag "$DEV_IMAGE" "sen-recrutement-docker-local:$GITHUB_SHA"
+          docker save "sen-recrutement-docker-local:$GITHUB_SHA" | gzip -1 > sen-recrutement-image.tar.gz
 
-          docker tag "$DEV_IMAGE" "$image:$GITHUB_SHA"
-          docker push "$image:$GITHUB_SHA"
-          if [ "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/dev" --jq .object.sha)" = "$GITHUB_SHA" ]; then
-            docker tag "$image:$GITHUB_SHA" "$image:dev"
-            docker push "$image:dev"
-          fi
+      - name: Publier l’image validée dans GitHub Actions
+        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sen-recrutement-docker-local
+          path: sen-recrutement-image.tar.gz
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 90

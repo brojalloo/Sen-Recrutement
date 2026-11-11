@@ -6,9 +6,9 @@ Dans PowerShell, ouvre le dossier du dépôt sur la branche `dev` et démarre Do
 .\deploy\dev-local\Sync-Dev.ps1
 ```
 
-Ouvre [127.0.0.1:8093](http://127.0.0.1:8093). La commande télécharge la dernière image validée de `dev` et la démarre par empreinte. Relance-la pour récupérer une nouvelle version. Les conteneurs déjà installés redémarrent quand Docker Desktop redémarre, sauf arrêt manuel.
+Ouvre [127.0.0.1:8093](http://127.0.0.1:8093). La commande télécharge l’image du dernier push validé sur `dev` et vérifie sa révision avant de la démarrer. Relance-la pour récupérer une nouvelle version. Les conteneurs déjà installés redémarrent quand Docker Desktop redémarre, sauf arrêt manuel.
 
-Si le paquet GHCR est privé, lance `docker --context desktop-linux login ghcr.io --username brojalloo` et utilise un jeton GitHub classique avec `read:packages` à l’invite du mot de passe. Tant que la première publication de `dev` n’a pas réussi, utilise la construction locale ci-dessous.
+Pour télécharger l’image, installe GitHub CLI avec `winget install --id GitHub.cli`, rouvre PowerShell, puis lance `gh auth login`. L’archive GitHub Actions est disponible pendant 90 jours. La construction locale ci-dessous fonctionne aussi sans GitHub CLI.
 
 ## Développer avec Docker
 
@@ -33,4 +33,4 @@ docker --context desktop-linux compose --env-file deploy/dev-local/.env -f deplo
 docker --context desktop-linux compose --env-file deploy/dev-local/.env -f deploy/dev-local/compose.yaml stop
 ```
 
-Les pull requests vers `dev` construisent et démarrent cette configuration dans GitHub Actions. Après validation d’un push sur `dev`, le workflow publie les images de développement sur GHCR. La mise en service sur un serveur reste une étape distincte.
+Les pull requests vers `dev` construisent et démarrent cette configuration dans GitHub Actions. Après validation d’un push sur `dev`, le workflow publie l’image de développement comme artefact GitHub Actions. La mise en service sur un serveur reste une étape distincte.

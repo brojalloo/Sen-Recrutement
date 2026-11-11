@@ -43,11 +43,39 @@ try {
         $env:DEV_IMAGE = 'sen-recrutement-docker-local:local'
         Invoke-Docker @composeArgs up --build --wait --wait-timeout 180
     } else {
-        $repository = 'ghcr.io/brojalloo/sen-recrutement-docker-local'
-        Invoke-Docker pull "${repository}:dev"
-        $image = Invoke-Docker image inspect "${repository}:dev" --format '{{index .RepoDigests 0}}'
-        if ($image -notlike "$repository@sha256:*") {
-            throw "Empreinte de l'image introuvable pour $repository."
+        if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
+            throw "Installe GitHub CLI et lance 'gh auth login', ou utilise -Build."
+        }
+
+        $repository = 'brojalloo/Sen-Recrutement'
+        $endpoint = "repos/$repository/actions/workflows/ci-deploy.yml/runs?branch=dev&event=push&status=success&per_page=1"
+        $result = gh api $endpoint --jq '.workflow_runs[0] | [.id, .head_sha] | @tsv'
+        if ($LASTEXITCODE -ne 0 -or $result -notmatch '^([0-9]+)\t([a-f0-9]{40})$') {
+            throw "Impossible de trouver une execution dev valide. Verifie 'gh auth status' ou utilise -Build."
+        }
+        $runId = $Matches[1]
+        $revision = $Matches[2]
+        $image = "sen-recrutement-docker-local:${revision}"
+
+        $installed = Invoke-Docker image ls --quiet $image
+        if (-not $installed) {
+            $download = Join-Path ([System.IO.Path]::GetTempPath()) ([guid]::NewGuid().ToString())
+            New-Item -ItemType Directory -Path $download | Out-Null
+            try {
+                gh run download $runId --repo $repository --name sen-recrutement-docker-local --dir $download
+                if ($LASTEXITCODE -ne 0) {
+                    throw "Le telechargement de l'image a echoue. Utilise -Build si l'archive a expire."
+                }
+                Invoke-Docker load --input (Join-Path $download 'sen-recrutement-image.tar.gz')
+            } finally {
+                Remove-Item -LiteralPath $download -Recurse -Force
+            }
+        }
+
+        $labels = Invoke-Docker image inspect $image --format '{{json .Config.Labels}}' | ConvertFrom-Json
+        $imageRevision = $labels.'org.opencontainers.image.revision'
+        if ($imageRevision -ne $revision) {
+            throw "L'image Docker ne correspond pas a la revision validee."
         }
         $env:DEV_IMAGE = $image
         Invoke-Docker @composeArgs up --no-build --pull missing --wait --wait-timeout 180

@@ -28,15 +28,16 @@ class ProfileController extends Controller
             'cv' => 'nullable|file|mimes:pdf,doc,docx|max:5120', // Max 5MB
         ]);
 
-        // Handle CV upload
+        // Handle CV upload. Le CV vit sur le disque privé : le disque `public`
+        // est servi sans authentification via `public/storage`.
         if ($request->hasFile('cv')) {
             // Delete old CV if exists
-            if ($user->cv_path && Storage::disk('public')->exists($user->cv_path)) {
-                Storage::disk('public')->delete($user->cv_path);
+            if ($user->cv_path && Storage::disk('local')->exists($user->cv_path)) {
+                Storage::disk('local')->delete($user->cv_path);
             }
 
             // Store new CV
-            $cvPath = $request->file('cv')->store('cvs', 'public');
+            $cvPath = $request->file('cv')->store('cvs', 'local');
             $data['cv_path'] = $cvPath;
         }
 
@@ -56,8 +57,8 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->cv_path && Storage::disk('public')->exists($user->cv_path)) {
-            Storage::disk('public')->delete($user->cv_path);
+        if ($user->cv_path && Storage::disk('local')->exists($user->cv_path)) {
+            Storage::disk('local')->delete($user->cv_path);
             $user->update(['cv_path' => null]);
         }
 

@@ -2,8 +2,11 @@ name: sen-recrutement-dev-local
 
 services:
   app:
-    image: ${DEV_IMAGE:-ghcr.io/brojalloo/sen-recrutement-dev:dev}
-    build: ../..
+    image: ${DEV_IMAGE:-ghcr.io/brojalloo/sen-recrutement-docker-local:dev}
+    build:
+      context: ../..
+      labels:
+        org.opencontainers.image.source: https://github.com/brojalloo/Sen-Recrutement
     restart: unless-stopped
     ports:
       - "127.0.0.1:8093:8000"

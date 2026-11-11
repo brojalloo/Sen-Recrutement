@@ -40,10 +40,10 @@ $composeArgs = @('compose', '--env-file', $envFile, '-f', $compose)
 $previousImage = $env:DEV_IMAGE
 try {
     if ($Build) {
-        $env:DEV_IMAGE = 'sen-recrutement-dev:local'
+        $env:DEV_IMAGE = 'sen-recrutement-docker-local:local'
         Invoke-Docker @composeArgs up --build --wait --wait-timeout 180
     } else {
-        $repository = 'ghcr.io/brojalloo/sen-recrutement-dev'
+        $repository = 'ghcr.io/brojalloo/sen-recrutement-docker-local'
         Invoke-Docker pull "${repository}:dev"
         $image = Invoke-Docker image inspect "${repository}:dev" --format '{{index .RepoDigests 0}}'
         if ($image -notlike "$repository@sha256:*") {

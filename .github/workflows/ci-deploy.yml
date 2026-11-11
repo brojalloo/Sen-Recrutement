@@ -181,7 +181,7 @@ jobs:
       cancel-in-progress: true
     env:
       COMPOSE_FILE: deploy/dev-local/compose.yaml
-      DEV_IMAGE: sen-recrutement-dev:ci
+      DEV_IMAGE: sen-recrutement-docker-local:ci
       SEN_RECRUTEMENT_APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
 
     steps:
@@ -213,7 +213,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           registry="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}"
-          image="$registry/sen-recrutement-dev"
+          image="$registry/sen-recrutement-docker-local"
           echo "$GH_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
 
           docker tag "$DEV_IMAGE" "$image:$GITHUB_SHA"

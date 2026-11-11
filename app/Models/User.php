@@ -6,6 +6,7 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -112,12 +113,18 @@ class User extends Authenticatable
     }
 
     // Relations
-    public function jobs()
+    /**
+     * @return HasMany<Job, $this>
+     */
+    public function jobs(): HasMany
     {
         return $this->hasMany(Job::class, 'recruiter_id');
     }
 
-    public function applications()
+    /**
+     * @return HasMany<Application, $this>
+     */
+    public function applications(): HasMany
     {
         return $this->hasMany(Application::class, 'user_id');
     }

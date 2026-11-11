@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Recruiter;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\JobRequest;
 use App\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,18 +23,9 @@ class JobController extends Controller
         return view('recruiter.jobs.create');
     }
 
-    public function store(Request $request)
+    public function store(JobRequest $request)
     {
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'company' => ['required', 'string', 'max:255'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'type' => ['nullable', 'string', 'max:50'],
-            'salary_min' => ['nullable', 'numeric'],
-            'salary_max' => ['nullable', 'numeric'],
-        ]);
-        $job = new Job($data);
+        $job = new Job($request->validated());
         $job->recruiter_id = Auth::id();
         $job->status = 'active';
         $job->approval_status = 'pending'; // En attente d'approbation par l'admin
@@ -51,20 +43,10 @@ class JobController extends Controller
         return view('recruiter.jobs.edit', compact('job'));
     }
 
-    public function update(Request $request, $id)
+    public function update(JobRequest $request, $id)
     {
         $job = Job::where('recruiter_id', Auth::id())->findOrFail($id);
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'company' => ['required', 'string', 'max:255'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'type' => ['nullable', 'string', 'max:50'],
-            'salary_min' => ['nullable', 'numeric'],
-            'salary_max' => ['nullable', 'numeric'],
-            'status' => ['nullable', 'string'],
-        ]);
-        $job->fill($data);
+        $job->fill($request->validated());
         $job->save();
 
         return redirect()->route('recruiter.jobs.index')->with('status', 'Offre mise à jour');

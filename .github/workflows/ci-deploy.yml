@@ -3,8 +3,10 @@ name: CI & Deploy
 on:
   push:
     branches: [ main ]
+  # Toutes les PR, pas seulement celles qui visent `main` : une PR empilée sur
+  # une autre branche n'était jamais vérifiée, et arrivait donc sur `main`
+  # sans avoir jamais vu la CI.
   pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -50,6 +52,9 @@ jobs:
 
       - name: Check code style
         run: ./vendor/bin/pint --test
+
+      - name: Analyse statically
+        run: ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress
 
       - name: Run tests
         run: php artisan test

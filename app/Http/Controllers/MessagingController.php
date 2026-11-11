@@ -63,9 +63,8 @@ class MessagingController extends Controller
     public function markRead($id)
     {
         $msg = Message::findOrFail($id);
-        if ($msg->recipient_id !== Auth::id()) {
-            abort(403);
-        }
+        $this->authorize('markAsRead', $msg);
+
         $msg->is_read = true;
         $msg->read_at = now();
         $msg->save();

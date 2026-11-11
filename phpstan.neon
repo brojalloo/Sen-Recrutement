@@ -1,0 +1,19 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+
+    paths:
+        - app
+        - database
+        - routes
+        - tests
+
+    # Le code passe le niveau 5 sans aucune exception ni baseline : la CI
+    # échoue donc sur la moindre erreur, ancienne comme nouvelle.
+    #
+    # Prochain palier : le niveau 6 remonte 75 erreurs, essentiellement des
+    # types manquants sur les paramètres, les retours et les valeurs de
+    # tableaux. Rien d'urgent, mais c'est la marche suivante — et elle se
+    # monte fichier par fichier, pas d'un bloc.

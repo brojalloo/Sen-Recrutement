@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Mail\Transport\ArrayTransport;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -32,7 +33,13 @@ class ContactFormTest extends TestCase
             'message' => 'Bonjour, je souhaite des précisions sur le poste.',
         ]);
 
-        $sent = Mail::mailer()->getSymfonyTransport()->messages();
+        // `getSymfonyTransport()` est typé TransportInterface ; seul le
+        // transport `array` des tests expose `messages()`. L'assertion dit
+        // explicitement sur quoi le test s'appuie au lieu de le supposer.
+        $transport = Mail::mailer()->getSymfonyTransport();
+        $this->assertInstanceOf(ArrayTransport::class, $transport);
+
+        $sent = $transport->messages();
 
         $this->assertCount(1, $sent);
 

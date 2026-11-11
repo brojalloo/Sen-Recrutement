@@ -135,8 +135,8 @@
                                 </div>
                             </div>
                             <div class="d-grid gap-2">
-                                <a href="{{ asset('storage/' . $user->cv_path) }}" target="_blank" class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-eye me-2"></i>Voir le CV
+                                <a href="{{ route('download.cv', $user->id) }}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-download me-2"></i>Télécharger mon CV
                                 </a>
                                 <form method="POST" action="{{ route('candidate.profile.deleteCV') }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre CV ?');">
                                     @csrf

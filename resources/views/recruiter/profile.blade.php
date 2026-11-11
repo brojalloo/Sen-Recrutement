@@ -158,7 +158,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <p class="text-muted small mb-0">Offres actives</p>
-                                <h4 class="mb-0 fw-bold text-primary">{{ $user->jobs()->where('is_active', true)->count() }}</h4>
+                                <h4 class="mb-0 fw-bold text-primary">{{ $activeJobsCount }}</h4>
                             </div>
                             <div class="avatar-circle bg-primary bg-opacity-10 text-primary">
                                 <i class="bi bi-briefcase"></i>
@@ -168,7 +168,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <p class="text-muted small mb-0">Candidatures reçues</p>
-                                <h4 class="mb-0 fw-bold text-success">{{ $user->jobs()->withCount('applications')->get()->sum('applications_count') }}</h4>
+                                <h4 class="mb-0 fw-bold text-success">{{ $receivedApplicationsCount }}</h4>
                             </div>
                             <div class="avatar-circle bg-success bg-opacity-10 text-success">
                                 <i class="bi bi-people"></i>

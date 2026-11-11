@@ -39,9 +39,12 @@ class ApplicationController extends Controller
                 ->withErrors(['job_id' => 'Vous avez déjà postulé à cette offre.']);
         }
 
+        // Disque privé : le disque `public` est servi sans authentification via
+        // le lien symbolique `public/storage`, ce qui rendrait le CV
+        // téléchargeable par n'importe qui connaissant l'URL.
         $cvPath = null;
         if ($request->hasFile('cv')) {
-            $cvPath = $request->file('cv')->store('cvs', 'public');
+            $cvPath = $request->file('cv')->store('cvs', 'local');
         }
 
         $application = Application::create([

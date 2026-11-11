@@ -9,7 +9,7 @@
     <tbody>
       @foreach($messages as $m)
         <tr>
-          <td>{{ optional(\App\Models\User::find($m->recipient_id))->email }}</td>
+          <td>{{ optional($m->recipient)->email }}</td>
           <td>{{ $m->subject }}</td>
           <td>{{ $m->created_at }}</td>
         </tr>

@@ -10,7 +10,7 @@ class LogController extends Controller
 {
     public function index()
     {
-        $logs = AdminLog::query()->orderBy('id', 'desc')->paginate(50);
+        $logs = AdminLog::query()->with('user')->orderBy('id', 'desc')->paginate(50);
 
         return view('admin.logs', compact('logs'));
     }

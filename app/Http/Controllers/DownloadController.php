@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DownloadController extends Controller
 {
-    public function downloadCV($userId)
+    public function downloadCV(string $userId): StreamedResponse|RedirectResponse
     {
         $user = User::findOrFail($userId);
 

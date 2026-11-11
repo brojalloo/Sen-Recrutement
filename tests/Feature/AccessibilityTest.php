@@ -56,7 +56,7 @@ class AccessibilityTest extends TestCase
 
     public function test_the_menu_button_has_an_accessible_name(): void
     {
-        $html = $this->get('/')->getContent();
+        $html = (string) $this->get('/')->getContent();
 
         $this->assertMatchesRegularExpression(
             '/<button[^>]*navbar-toggler[^>]*aria-label="[^"]+"/',
@@ -67,7 +67,7 @@ class AccessibilityTest extends TestCase
 
     public function test_the_menu_button_declares_what_it_controls(): void
     {
-        $html = $this->get('/')->getContent();
+        $html = (string) $this->get('/')->getContent();
 
         $this->assertMatchesRegularExpression('/<button[^>]*navbar-toggler[^>]*aria-controls="mainNav"/', $html);
         $this->assertMatchesRegularExpression('/<button[^>]*navbar-toggler[^>]*aria-expanded="false"/', $html);
@@ -75,7 +75,7 @@ class AccessibilityTest extends TestCase
 
     public function test_the_password_reveal_button_has_an_accessible_name(): void
     {
-        $html = $this->get('/login')->getContent();
+        $html = (string) $this->get('/login')->getContent();
 
         $this->assertMatchesRegularExpression(
             '/<button[^>]*data-toggle-password[^>]*aria-label="[^"]+"/',
@@ -86,7 +86,7 @@ class AccessibilityTest extends TestCase
 
     public function test_the_login_page_starts_at_heading_level_one(): void
     {
-        $html = $this->get('/login')->getContent();
+        $html = (string) $this->get('/login')->getContent();
 
         $this->assertSame(1, preg_match_all('/<h1[\s>]/', $html), 'La page de connexion doit avoir exactement un h1.');
     }
@@ -94,7 +94,7 @@ class AccessibilityTest extends TestCase
     public function test_the_home_search_fields_are_labelled(): void
     {
         $this->assertFieldsAreLabelled(
-            $this->get('/')->getContent(),
+            (string) $this->get('/')->getContent(),
             ['keyword', 'location'],
             "la page d'accueil"
         );
@@ -103,7 +103,7 @@ class AccessibilityTest extends TestCase
     public function test_the_job_filter_fields_are_labelled(): void
     {
         $this->assertFieldsAreLabelled(
-            $this->get('/jobs')->getContent(),
+            (string) $this->get('/jobs')->getContent(),
             ['keyword', 'location', 'type'],
             'la page des offres'
         );
@@ -112,7 +112,7 @@ class AccessibilityTest extends TestCase
     public function test_the_contact_fields_are_labelled(): void
     {
         $this->assertFieldsAreLabelled(
-            $this->get('/contact')->getContent(),
+            (string) $this->get('/contact')->getContent(),
             ['name', 'email', 'subject', 'message'],
             'la page de contact'
         );
@@ -128,7 +128,7 @@ class AccessibilityTest extends TestCase
             'status' => 'active',
         ]);
 
-        $html = $this->actingAs($user)->get('/')->getContent();
+        $html = (string) $this->actingAs($user)->get('/')->getContent();
 
         $this->assertMatchesRegularExpression('/<button[^>]*id="themeToggle"[^>]*aria-label="[^"]+"/', $html);
     }

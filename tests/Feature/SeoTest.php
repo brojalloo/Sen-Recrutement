@@ -38,6 +38,9 @@ class SeoTest extends TestCase
         ]);
     }
 
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
     private function job(string $approval = 'approved', array $attributes = []): Job
     {
         return Job::create(array_merge([
@@ -78,7 +81,7 @@ class SeoTest extends TestCase
     {
         $job = $this->job();
 
-        $data = $this->structuredData($this->get("/jobs/{$job->id}")->getContent());
+        $data = $this->structuredData((string) $this->get("/jobs/{$job->id}")->getContent());
 
         $this->assertSame('https://schema.org', $data['@context']);
         $this->assertSame('JobPosting', $data['@type']);
@@ -94,7 +97,7 @@ class SeoTest extends TestCase
     {
         $job = $this->job('approved', ['salary_min' => 400000, 'salary_max' => 800000]);
 
-        $data = $this->structuredData($this->get("/jobs/{$job->id}")->getContent());
+        $data = $this->structuredData((string) $this->get("/jobs/{$job->id}")->getContent());
 
         // Comparaison souple : JSON n'a qu'un type numérique, 400000.0 est
         // réencodé en 400000. Ce qui compte est la valeur, pas le type PHP.
@@ -108,7 +111,7 @@ class SeoTest extends TestCase
     {
         $job = $this->job();
 
-        $data = $this->structuredData($this->get("/jobs/{$job->id}")->getContent());
+        $data = $this->structuredData((string) $this->get("/jobs/{$job->id}")->getContent());
 
         $this->assertArrayNotHasKey('baseSalary', $data);
     }
@@ -172,7 +175,7 @@ class SeoTest extends TestCase
 
     public function test_private_areas_are_not_offered_to_crawlers(): void
     {
-        $robots = $this->get('/robots.txt')->getContent();
+        $robots = (string) $this->get('/robots.txt')->getContent();
 
         $this->assertStringContainsString('Disallow: /admin', $robots);
         $this->assertStringContainsString('Disallow: /candidate', $robots);

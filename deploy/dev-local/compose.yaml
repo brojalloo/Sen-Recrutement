@@ -1,0 +1,55 @@
+name: sen-recrutement-dev-local
+
+services:
+  app:
+    image: ${DEV_IMAGE:-sen-recrutement-docker-local:local}
+    build:
+      context: ../..
+      labels:
+        org.opencontainers.image.source: https://github.com/brojalloo/Sen-Recrutement
+        org.opencontainers.image.revision: ${DEV_REVISION:-local}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8093:8000"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "false"
+      APP_URL: http://127.0.0.1:8093
+      APP_KEY: ${SEN_RECRUTEMENT_APP_KEY:?Lancez Sync-Dev.ps1 pour initialiser la configuration locale}
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_DATABASE: laravel
+      DB_USERNAME: laravel
+      DB_PASSWORD: recrutement-local
+      MAIL_MAILER: log
+      QUEUE_CONNECTION: sync
+    volumes:
+      - files:/var/www/html/storage/app
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, php, -r, 'exit(@file_get_contents("http://127.0.0.1:8000/up") === false ? 1 : 0);']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: recrutement-local
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: [CMD-SHELL, 'mysql --protocol=TCP -h 127.0.0.1 -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE" -e "SELECT 1"']
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  db-data:
+  files:

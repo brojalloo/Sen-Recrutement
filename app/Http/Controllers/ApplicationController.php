@@ -6,6 +6,7 @@ use App\Models\Application;
 use App\Models\Job;
 use App\Models\User;
 use App\Notifications\NewApplicationReceived;
+use App\Support\NotificationDispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +19,7 @@ class ApplicationController extends Controller
         return view('candidate.apply', compact('job'));
     }
 
-    public function applyStore(Request $request, $id)
+    public function applyStore(Request $request, NotificationDispatcher $notifications, $id)
     {
         $job = Job::visible()->findOrFail($id);
         $userId = Auth::id();
@@ -57,14 +58,11 @@ class ApplicationController extends Controller
             'applied_at' => now(),
         ]);
 
-        // Envoyer une notification par email au recruteur
-        try {
-            $recruiter = User::find($job->recruiter_id);
-            if ($recruiter) {
-                $recruiter->notify(new NewApplicationReceived($application));
-            }
-        } catch (\Exception $e) {
-            // Ignorer les erreurs d'envoi d'email
+        // Prévenir le recruteur. Un échec d'envoi est consigné, pas avalé,
+        // mais n'annule pas la candidature.
+        $recruiter = User::find($job->recruiter_id);
+        if ($recruiter) {
+            $notifications->send($recruiter, new NewApplicationReceived($application));
         }
 
         return redirect()->route('candidate.dashboard')->with('status', 'Candidature envoyée avec succès !');

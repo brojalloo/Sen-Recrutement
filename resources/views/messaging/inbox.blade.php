@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@push('styles')
+    @vite('resources/css/pages/messaging-inbox.css')
+@endpush
+
 @section('content')
 <div style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); min-height: calc(100vh - 200px);">
   <div class="container py-5">
@@ -94,22 +98,4 @@
   </div>
 </div>
 
-<style>
-.avatar-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-}
-.table tbody tr {
-  transition: all 0.3s ease;
-}
-.table tbody tr:hover {
-  background-color: rgba(79, 70, 229, 0.02);
-  transform: scale(1.005);
-}
-</style>
 @endsection

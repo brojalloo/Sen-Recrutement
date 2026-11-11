@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@push('styles')
+    @vite('resources/css/pages/candidate-profile.css')
+@endpush
+
 @section('content')
 <div style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); min-height: calc(100vh - 200px);">
     <div class="container py-5">
@@ -138,7 +142,7 @@
                                 <a href="{{ route('download.cv', $user->id) }}" class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-download me-2"></i>Télécharger mon CV
                                 </a>
-                                <form method="POST" action="{{ route('candidate.profile.deleteCV') }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre CV ?');">
+                                <form method="POST" action="{{ route('candidate.profile.deleteCV') }}" data-confirm="Êtes-vous sûr de vouloir supprimer votre CV ?">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-outline-danger btn-sm w-100">
@@ -175,16 +179,4 @@
     </div>
 </div>
 
-<style>
-.avatar-circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    flex-shrink: 0;
-}
-</style>
 @endsection

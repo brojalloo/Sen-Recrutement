@@ -28,7 +28,7 @@
         </form>
       </div>
       <div class="col-lg-5 d-none d-lg-block text-center">
-        <img src="https://illustrations.popsy.co/violet/work-from-home.svg" class="img-fluid" alt="Illustration professionnelle" style="max-height: 400px;">
+        <img src="{{ asset('assets/images/work-from-home.svg') }}" class="img-fluid" alt="Illustration professionnelle" style="max-height: 400px;">
       </div>
     </div>
   </div>

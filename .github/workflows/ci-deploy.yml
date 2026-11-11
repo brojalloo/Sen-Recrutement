@@ -209,6 +209,7 @@ jobs:
 
       - name: Préparer l’image validée
         if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        shell: bash
         run: |
           docker tag "$DEV_IMAGE" "sen-recrutement-docker-local:$GITHUB_SHA"
           docker save "sen-recrutement-docker-local:$GITHUB_SHA" | gzip -1 > sen-recrutement-image.tar.gz

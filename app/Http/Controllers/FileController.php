@@ -23,6 +23,10 @@ class FileController extends Controller
             abort(403);
         }
 
-        return Storage::disk('public')->download($app->cv_path);
+        if (! Storage::disk('local')->exists($app->cv_path)) {
+            abort(404);
+        }
+
+        return Storage::disk('local')->download($app->cv_path);
     }
 }

@@ -75,6 +75,12 @@ class AdminController extends Controller
     public function toggleUserStatus($id)
     {
         $user = User::findOrFail($id);
+
+        // Éviter qu'un administrateur se verrouille lui-même hors du système.
+        if ($user->is(auth()->user())) {
+            return back()->withErrors(['user' => 'Vous ne pouvez pas désactiver votre propre compte.']);
+        }
+
         $newStatus = $user->status === 'active' ? 'inactive' : 'active';
         $user->update(['status' => $newStatus]);
 

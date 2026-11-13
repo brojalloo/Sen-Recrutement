@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureActiveUser;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
@@ -15,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Global middleware
         $middleware->append(SecurityHeaders::class);
+
+        // Vérifier le statut à chaque requête web, même pour les sessions existantes
+        // et les routes partagées (messagerie, téléchargements, etc.).
+        $middleware->appendToGroup('web', EnsureActiveUser::class);
 
         // Route middleware aliases
         $middleware->alias([

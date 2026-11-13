@@ -21,7 +21,9 @@ class AuthController extends Controller
             'password' => ['required', 'min:6'],
         ]);
 
-        if (Auth::attempt($credentials, false)) {
+        // Refuser toute nouvelle session pour un compte désactivé.
+        // La réponse reste générique pour ne pas révéler l'état d'un compte.
+        if (Auth::attempt([...$credentials, 'status' => 'active'], false)) {
             $request->session()->regenerate();
             $user = Auth::user();
             Log::info('Login', ['user' => $user->email]);

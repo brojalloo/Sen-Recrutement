@@ -173,13 +173,13 @@
                           </span>
                         @endif
                         
-                        @if(optional($a->user)->cv_path)
-                          <a href="{{ route('download.cv', $a->user->id) }}" class="btn btn-sm btn-outline-primary" title="Télécharger CV">
+                        @if($a->cv_path)
+                          <a href="{{ route('cv.download', $a->id) }}" class="btn btn-sm btn-outline-primary" title="Télécharger CV">
                             <i class="bi bi-file-earmark-pdf me-1"></i>CV
                           </a>
                         @else
                           <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">
-                            <i class="bi bi-file-earmark-x me-1"></i>Pas de CV
+                            <i class="bi bi-file-earmark-x me-1"></i>Pas de CV joint
                           </span>
                         @endif
 

@@ -89,7 +89,8 @@ class InactiveAccountAccessTest extends TestCase
 
         $this->assertSame('inactive', $candidate->fresh()->status);
 
-        $this->actingAs($candidate)
+        // Le middleware consulte l'utilisateur rechargé depuis la base.
+        $this->actingAs($candidate->fresh())
             ->get('/candidate/dashboard')
             ->assertRedirect(route('login'));
 

@@ -65,9 +65,19 @@ class JobController extends Controller
             'status' => ['nullable', 'string'],
         ]);
         $job->fill($data);
-        $job->save();
+        $modified = $job->isDirty();
 
-        return redirect()->route('recruiter.jobs.index')->with('status', 'Offre mise à jour');
+        if ($modified) {
+            // Le recruteur ne peut pas modifier une offre validée sans
+            // la soumettre à nouveau à la modération administrative.
+            $job->approval_status = 'pending';
+            $job->save();
+        }
+
+        return redirect()->route('recruiter.jobs.index')->with(
+            'status',
+            $modified ? 'Offre mise à jour et soumise à validation.' : 'Aucune modification détectée.'
+        );
     }
 
     public function destroy($id)
@@ -86,8 +96,10 @@ class JobController extends Controller
         ]);
         $path = $request->file('logo')->store('logos', 'public');
         $job->company_logo = Storage::disk('public')->url($path);
+        // Le logo fait partie de l'annonce soumise à validation.
+        $job->approval_status = 'pending';
         $job->save();
 
-        return back()->with('status', 'Logo mis à jour');
+        return back()->with('status', 'Logo mis à jour et soumis à validation.');
     }
 }
